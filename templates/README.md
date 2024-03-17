@@ -16,6 +16,7 @@
   "unit": "°C"
 } %}
 
+>
 The temperature is {{ my_test_data.temperature }} {{ my_test_data.unit }}.
 ```
 
@@ -23,11 +24,16 @@ The temperature is {{ my_test_data.temperature }} {{ my_test_data.unit }}.
 ### date_time
 
 ```jinja2
+{## note or disble
 {% set month=states("sensor.date").split("-")[1] %}
 Month: {{ month }}
-
+##}
 
 {{ now().date() }} / {{ now().time() }}
 {% set month=now().strftime('%m') %}
 Month: {{ month }}
+
+>
+2024-03-17 / 08:42:06.920837
+Month: 03
 ```
