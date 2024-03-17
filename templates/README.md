@@ -2,6 +2,10 @@
 
 ---
 
+[**yaml**](https://cs.wikipedia.org/wiki/YAML)
+
+---
+
 ## templates
 
 [**Jinja2**](https://jinja.palletsprojects.com/en/3.1.x/) - skriptovací (lépe asi šablonovací) jazyk napsaný v jazyce Python a v Home Assistantu se používá pro vytváření dynamických šablon (templates) pro konfigurační soubory, automatizace, zobrazení stavů entit a další účely.
