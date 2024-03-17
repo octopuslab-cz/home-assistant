@@ -8,7 +8,7 @@
 
 [homeassistant.local:8123/developer-tools/template](http://homeassistant.local:8123/developer-tools/template)
 
-### Data with json structure
+### data with json structure
 
 ```jinja2
 {% set my_test_data = {
