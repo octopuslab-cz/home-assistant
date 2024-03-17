@@ -8,11 +8,21 @@
 
 [homeassistant.local:8123/developer-tools/template](http://homeassistant.local:8123/developer-tools/template)
 
+### Data with json structure
 
 ```jinja2
+{% set my_test_data = {
+  "temperature": 23,
+  "unit": "°C"
+} %}
 
---- date_time---
+The temperature is {{ my_test_data.temperature }} {{ my_test_data.unit }}.
+```
 
+
+### date_time
+
+```jinja2
 {% set month=states("sensor.date").split("-")[1] %}
 Month: {{ month }}
 
@@ -20,5 +30,4 @@ Month: {{ month }}
 {{ now().date() }} / {{ now().time() }}
 {% set month=now().strftime('%m') %}
 Month: {{ month }}
-
 ```
