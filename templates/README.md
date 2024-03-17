@@ -58,6 +58,15 @@ The temperature is {{ my_test_data.temperature }} {{ my_test_data.unit }}.
 Month: {{ month }}
 ##}
 
+{{ as_timestamp(now()) }}
+> 1710688333.123456
+
+timestamp2datetime: {{ as_datetime("1710688333.123456") }}
+> timestamp2datetime: 2024-03-17 15:12:13.123456+00:00
+
+{{ now().strftime("%H:%M") }}
+> 16:22
+
 {{ now().date() }} / {{ now().time() }}
 {% set month=now().strftime('%m') %}
 Month: {{ month }}
