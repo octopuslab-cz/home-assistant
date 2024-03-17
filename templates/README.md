@@ -2,7 +2,32 @@
 
 ---
 
+## yaml 
+
 [**yaml**](https://cs.wikipedia.org/wiki/YAML)
+
+### List (sequence) / Array
+
+```yaml
+this_is_a_list:
+  - apple
+  - orange
+  - banana
+
+second_list: [1,2,3,5,6]
+```
+
+### Dictionary / Associative array
+
+```yaml
+my_dict:
+  item: value
+  item2: 123
+  ...
+```
+
+Automatizace je *list* *"slovníků"*.
+
 
 ---
 
