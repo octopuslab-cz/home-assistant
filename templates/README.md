@@ -37,3 +37,30 @@ Month: {{ month }}
 2024-03-17 / 08:42:06.920837
 Month: 03
 ```
+
+### config - bitcoin info
+
+```yaml
+rest:
+  - resource: https://api.coinpaprika.com/v1/tickers/btc-bitcoin
+    scan_interval: 90
+    sensor:
+   ### BTC
+      - name: "BTC/USD"
+        # json_attributes_path: "$.[0]"
+        value_template: '{{ value_json["quotes"]["USD"]["price"] }}'
+        unit_of_measurement: "USD"
+        # json_attributes:
+        #   - name
+        #   - symbol
+        #   - price
+        #   - quotes
+
+
+sensor:
+  - platform: rest
+    name: Latest Bitcoin Block
+    resource: https://blockchain.info/latestblock
+    value_template: "{{ value_json.height }}"
+    scan_interval: 300
+```
