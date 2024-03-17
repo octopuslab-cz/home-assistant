@@ -4,7 +4,7 @@
 
 ## templates
 
-**Jinja2** - skriptovací (lépe asi šablonovací) jazyk napsaný v jazyce Python a v Home Assistantu se používá pro vytváření dynamických šablon (templates) pro konfigurační soubory, automatizace, zobrazení stavů entit a další účely.
+[**Jinja2**](https://jinja.palletsprojects.com/en/3.1.x/) - skriptovací (lépe asi šablonovací) jazyk napsaný v jazyce Python a v Home Assistantu se používá pro vytváření dynamických šablon (templates) pro konfigurační soubory, automatizace, zobrazení stavů entit a další účely.
 
 [homeassistant.local:8123/developer-tools/template](http://homeassistant.local:8123/developer-tools/template)
 
