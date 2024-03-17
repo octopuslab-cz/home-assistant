@@ -13,7 +13,14 @@ Device ---> Entities --|- Name
                                            |-          light / heating
                           Service ---------------------| turn_on
                                                        | turn_off
-                                                       ... 
+                                                       ...
+
+
+Automations:
+trigger (platform / state)
+             -> condition
+                        -> action (service)
+
 ```
 ---
 
