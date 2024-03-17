@@ -4,7 +4,7 @@
 
 ## templates
 
-```
+```yaml
 homeassistant.local:8123/developer-tools/template
 --- date_time---
 
