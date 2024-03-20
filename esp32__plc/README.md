@@ -28,7 +28,7 @@ sensor:
     name: "ADC #2"
     update_interval: 15s
     attenuation: 11dB
-  - platform: tmp102
+  - platform: tmp102   # As workaround for missing LM75 this platform is compatible too, but only 9-bit resolution available
     address: 0x49
     name: "Board Temperature"
     update_interval: 60s
