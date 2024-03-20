@@ -28,6 +28,10 @@ sensor:
     name: "ADC #2"
     update_interval: 15s
     attenuation: 11dB
+  - platform: tmp102
+    address: 0x49
+    name: "Board Temperature"
+    update_interval: 60s
 
 # Individual outputs
 switch:
