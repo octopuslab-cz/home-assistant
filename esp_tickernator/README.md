@@ -30,5 +30,17 @@ display:
     lambda: |-
       it.printf("%s", id(ident_txt).state.c_str());
     
+```
 
+helper - text
+
+```yaml
+"sensor.latest_bitcoin_block"
+
+```
+
+data - API
+
+```yaml
+...
 ```
