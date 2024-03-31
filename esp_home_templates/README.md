@@ -2,6 +2,15 @@
 
 ---
 
+## PIN2 / switch - relay / LED2
+
+```yaml
+switch:
+  - platform: gpio
+    name: "Led 2"
+    pin: GPIO2
+```
+
 ## WS
 
 ```yaml
