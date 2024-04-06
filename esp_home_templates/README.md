@@ -26,3 +26,19 @@ light:
     name: "RGB LED D"
     id: rgb3
 ```
+
+---
+
+## PIN2 LED2 - blink On boot
+
+```yaml
+esphome:
+  ...
+  on_boot:
+    priority: 600
+    # ...
+    then:
+      - switch.turn_on: led_2
+      - delay: 500ms
+      - switch.turn_off: led_2
+```
