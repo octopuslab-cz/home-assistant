@@ -25,5 +25,16 @@ binary_sensor:
 
 
 ```yaml
-...
+sensor:
+  - platform: adc
+    pin: A0
+    name: "8266_D8 ADC0"
+    filters:
+      # -  offset: -0.042
+      - multiply: 10
+      - median:
+          window_size: 5
+          send_every: 2
+          send_first_at: 2
+    update_interval: 3s
 ```
