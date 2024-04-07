@@ -29,6 +29,7 @@ light:
 
 ---
 
+
 ## PIN2 LED2 - blink On boot
 
 ```yaml
@@ -42,3 +43,24 @@ esphome:
       - delay: 500ms
       - switch.turn_off: led_2
 ```
+
+
+## PIN2 LED2 - still flashing
+
+```yaml
+interval:
+  - interval: 1000ms  # (200ms + 800ms)
+    then:
+      - lambda: |-
+          static bool led_state = false;
+          led_state = !led_state;
+          if (led_state) {
+            id(led_2).turn_on();
+            delay(200);  // on
+          } else {
+            id(led_2).turn_off();
+            delay(800);  // off
+          }
+```
+
+
