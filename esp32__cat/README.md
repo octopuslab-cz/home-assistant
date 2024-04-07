@@ -2,8 +2,8 @@
 
 ---
 
+## ESP C3 - CAT board | ESP32C3 AccelBoard
 
-## Devices
 ### I2C Bus
 ```yaml
 i2c:
