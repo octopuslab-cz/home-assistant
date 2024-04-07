@@ -17,6 +17,7 @@ i2c:
 ```yaml
 sensor:
   - platform: mpu6050
+    update_interval: 3s # 2-3s for control
     address: 0x68
     accel_x:
       name: "Accel X"
