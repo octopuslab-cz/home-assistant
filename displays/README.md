@@ -78,5 +78,30 @@ display:
     update_interval: 1000ms
     lambda: |-
       it.printf("%s", id(ident_txt).state.c_str());
+```
 
+## OLED I2C display ssd1306
+
+```yaml
+...
+font:
+  - file: 'verdana.ttf' # /homeassistant/esphome/verdana.ttf
+    id: font1
+    size: 12
+
+  - file: 'verdana.ttf'
+    id: font2
+    size: 18
+
+i2c:
+  sda: 21 # $(pin_sda)
+  scl: 22 # $(pin_scl)
+
+display: # x,y
+  - platform: ssd1306_i2c
+    model: "SSD1306 128x64"
+    address: 0x3C
+    lambda: |-
+      it.print(0, 0, id(font1), "Hello Octopus");
+      it.print(10, 20, id(font2), "TEST 123");
 ```
