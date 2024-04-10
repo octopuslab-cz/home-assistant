@@ -74,3 +74,26 @@ display:
         it.printf(0, 1, "Halving in %i", 840000 - (int) id(latest_block).state);
       }
 ```
+
+configuration.yaml
+```
+...
+sensor: !include sensor.yaml
+```
+
+sensor.yaml
+
+```yaml
+- platform: rest
+  name: BTC/USD
+  resource: https://api.coinpaprika.com/v1/tickers/btc-bitcoin
+  value_template: '{{ value_json["quotes"]["USD"]["price"] | round }}'
+  unit_of_measurement: "USD"
+  scan_interval: 120
+
+- platform: rest
+  name: Latest Bitcoin Block
+  resource: https://blockchain.info/latestblock
+  value_template: "{{ value_json.height }}"
+  scan_interval: 300
+```
