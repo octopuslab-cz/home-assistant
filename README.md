@@ -30,3 +30,11 @@ yaml / jinja2 / json ...
 https://github.com/octopuslab-cz/home-assistant/tree/main/templates
 
 ---
+
+## Install
+
+### Midnight Commander (via ssh)
+
+```
+[core-ssh]$ apk add mc
+```
