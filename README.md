@@ -35,8 +35,12 @@ https://github.com/octopuslab-cz/home-assistant/tree/main/templates
 
 ## Install
 
-**Midnight Commander** (via ssh)
+**HACS** [Home Assistant Community Store](https://hacs.xyz/)
+```
+[core-ssh]$  wget -O - https://get.hacs.xyz | bash -
+```
 
+**Midnight Commander** (via ssh)
 ```
 [core-ssh]$ apk add mc
 ```
