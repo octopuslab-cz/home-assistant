@@ -33,12 +33,22 @@ https://github.com/octopuslab-cz/home-assistant/tree/main/templates
 
 ---
 
+## Terminal & SSH
+
+(Home Assistant Add-on: SSH server)
+
+**Main sys info**
+```
+[core-ssh]$ ha os info
+```
+
 ## Install
 
 **HACS** [Home Assistant Community Store](https://hacs.xyz/)
 ```
 [core-ssh]$  wget -O - https://get.hacs.xyz | bash -
 ```
+
 
 **Midnight Commander** (via ssh)
 ```
