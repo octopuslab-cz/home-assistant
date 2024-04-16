@@ -1,0 +1,55 @@
+# ESP32 board + EDUshield (OLED + 2x button)
+...
+
+font:
+  - file: 'verdana.ttf' # /homeassistant/esphome/verdana.ttf
+    id: font1
+    size: 15 # 12ok
+
+  - file: 'verdana.ttf'
+    id: font2
+    size: 35
+
+i2c:
+  sda: 21 # $(pin_sda)
+  scl: 22 # $(pin_scl)
+
+display: # x,y
+  - platform: ssd1306_i2c
+    model: "SSD1306 128x64"
+    address: 0x3C
+    update_interval: 750ms
+    lambda: |-
+      it.print(10, 0, id(font1), "OctopusLAB.HA");
+      it.printf(30, 20, id(font2), "%.0f", id(my_number).state);
+
+switch:
+  - platform: gpio
+    id: led_2
+    name: "Led 2"
+    pin: 
+      number: GPIO2
+      inverted: True
+
+number:
+  - platform: template
+    name: "oled_num"
+    id: my_number
+    initial_value: 128
+    min_value: 0
+    max_value: 256
+    step: 1
+    optimistic: True
+
+binary_sensor:
+  - platform: gpio
+    name: "Button 34"
+    pin: 34
+    on_press:
+    - number.decrement: my_number
+
+  - platform: gpio
+    name: "Button 35"
+    pin: 35
+    on_press:
+    - number.increment: my_number
