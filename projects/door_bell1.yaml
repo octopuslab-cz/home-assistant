@@ -1,0 +1,27 @@
+# ESP32 board | Btn: 17 | Re: 16 
+...
+
+
+switch:
+  - platform: gpio
+    name: "rele 1"
+    id: re1
+    pin: GPIO16
+
+binary_sensor:
+  - platform: gpio
+    name: "Button"
+    pin:
+      number: 17
+      inverted: true
+      mode:
+        input: true
+        pullup: true
+    on_press:
+    - switch.turn_on: re1
+    - delay: 0.5s
+    - switch.turn_off: re1
+    - delay: 1s
+    - switch.turn_on: re1
+    - delay: 0.5s
+    - switch.turn_off: re1

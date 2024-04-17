@@ -1,0 +1,32 @@
+# ESP32 board
+
+...
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: xxxxx
+  services:
+    - service: service_servo_01
+      variables:
+        level: float
+      then:
+        - servo.write:
+            id: servo_01
+            level: !lambda 'return level / 100.0;'
+
+...
+
+
+# Example output platform
+# On ESP32, use ledc output
+output:
+  - platform: ledc
+    id: pwm_output
+    pin: GPIO17
+    frequency: 50 Hz
+
+# Example configuration entry
+servo:
+  - id: servo_01
+    output: pwm_output
