@@ -1,0 +1,196 @@
+# hookaMonk board | diagnostic
+# ver. 2403
+
+...
+
+i2c:
+  sda: 21
+  scl: 22
+  scan: true # 0x68
+  id: bus_a
+
+switch:
+  - platform: gpio
+    name: "Fet 1"
+    id: fet1
+    pin: 26
+  - platform: gpio
+    name: "Fet 2"
+    id: fet2
+    pin: 27
+
+dallas:
+  - pin: 25
+    update_interval: 5s
+
+# Individual sensors
+# NTC=35 / ADC(RAM) == 32 / 32
+sensor:
+  - platform: dallas
+    address: 0x030315a27909d328 # volny
+    name: "Temperature3"
+  - platform: adc
+    pin: 33 # 32/33 spi RAM / test basic RAW ADC
+    name: "Raw ADC_33 Value"
+    raw: true
+    unit_of_measurement: "raw"
+    update_interval: 5s
+    filters:
+      #- multiply: 1
+      - lambda: return int(x); # - int:
+
+  - platform: adc
+    pin: 39
+    id: vin
+    name: "V_in"
+    raw: true
+    unit_of_measurement: "V"
+    update_interval: 3s
+    attenuation: 11dB # 1: 20V ok! // 0: 12.6=32.0V 
+    filters:
+      - lambda: return x/127; # return int(x/12.6)/10;
+
+  - platform: adc
+    pin: 34
+    id: iout
+    name: "I_out"
+    raw: true
+    unit_of_measurement: "A"
+    update_interval: 3s
+    attenuation: 11dB # 1:
+    filters:
+      - lambda: return abs(x-2950)/117; # abs(int((raw-int(self.amp_zero))/float(self.raw_amp)))/10 
+# 123: 3.5=2x, 117: 
+  - platform: adc
+    id: source_sensor32
+    name: ADC0_32 # test
+    pin: 32 # 33 termitor / 33 spi RAM
+    filters:
+      # -  offset: -0.042
+      - multiply: 3.3
+      - median:
+          window_size: 8
+          send_every: 2
+          send_first_at: 2
+    update_interval: 5s
+
+  - platform: adc
+    id: source_sensor
+    pin: 35 # NTC
+    name: "NTC from RAW"
+    raw: true
+    unit_of_measurement: "°C"
+    update_interval: 3s
+    filters:
+    #  - multiply: 1
+      - lambda: return int((4096-x)/28); # - int: /30: 150=135 // 28: 170=135 //
+    #  - lambda: return int(x);
+
+  - platform: resistance
+    id: resistance_sensor
+    sensor: source_sensor
+    configuration: UPSTREAM
+    resistor: 11kOhm
+    # reference_voltage: 3.3V
+    name: Resistance Sensor
+
+  # Thermistor calibration
+  - platform: ntc
+    sensor: resistance_sensor
+    calibration:
+      b_constant: 3950
+      reference_temperature: 25°C
+      reference_resistance: 10kOhm
+    name: NTC Temperature
+
+  - platform: template
+    id: power_sensor
+    name: "Power"            # {return states('sensor.v_in') / states('sensor.i_out');}
+    unit_of_measurement: "W" # {{ states('sensor.v_in') | float / states('sensor.i_out') | float }}
+    lambda: |-
+      { return 123; }
+    # { return (id('vin').state) * (id('iout').state); }
+    # ok1: {return 123;}  
+    # x? {return id('vin').state;}
+    update_interval: 5s
+
+  # --- IR thermom. ---
+  - platform: mlx90614
+    ambient:
+      name: Ambient
+    object:
+      name: Object
+    update_interval: 5s
+
+  # gyro / temp 
+  - platform: mpu6050
+    address: 0x68
+    accel_x:
+      id: accel_x
+      name: "accel X"
+      filters:
+         - sliding_window_moving_average:
+            window_size: 5
+            send_every: 1
+         - delta: 0.5
+    accel_y:
+      id: accel_y    
+      name: "accel Y"
+      filters:
+         - sliding_window_moving_average:
+            window_size: 4
+            send_every: 1   
+         - delta: 0.5            
+    accel_z:
+      id: accel_z    
+      name: "accel z"
+      filters:
+         - sliding_window_moving_average:
+            window_size: 4
+            send_every: 1   
+         - delta: 0.5            
+    gyro_x:
+      name: "gyro X"
+      filters:
+         - sliding_window_moving_average:
+            window_size: 4
+            send_every: 1   
+         - delta: 0.5            
+    gyro_y:
+      name: "gyro Y"
+      filters:
+         - sliding_window_moving_average:
+            window_size: 4
+            send_every: 1     
+         - delta: 0.5            
+    gyro_z:
+      name: "gyro z"
+      filters:
+         - sliding_window_moving_average:
+            window_size: 4
+            send_every: 1      
+         - delta: 0.5            
+    temperature:
+      name: "MPU6050 Temperature"
+    update_interval: 1.5s
+  - platform: template
+    id: roll
+    name: pan1roll
+    accuracy_decimals: 2
+    lambda: |-
+      return  (atan( id(accel_y).state / sqrt( pow( id(accel_x).state , 2) + pow( id(accel_z).state , 2) ) ) * 180 / PI) ;
+    update_interval: 250ms
+
+interval:
+  - interval: 1000ms  # (200ms + 800ms)
+    then:
+      - lambda: |-
+          static bool fet_state = false;
+          fet_state = !fet_state;
+          if (fet_state) {
+            id(fet2).turn_on();
+            delay(300);  // on
+          } else {
+            id(fet2).turn_off();
+            delay(700);  // off
+          }

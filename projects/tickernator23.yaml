@@ -2,22 +2,16 @@
 
 ...
 
-# display8 test
+# display8
 spi:
   clk_pin: GPIO18
   mosi_pin: GPIO23
 
 sensor:
   - platform: homeassistant
-    name: "Helper cnt"
-    id: ident
-    entity_id: counter.cnt
-
-text_sensor:
-  - platform: homeassistant
-    name: "Helper test"
-    id: ident_txt
-    entity_id: input_text.text1
+    name: "BTC/USD"
+    id: ident_btc
+    entity_id: sensor.btc_usd
 
 display:
   - platform: max7219
@@ -25,4 +19,5 @@ display:
     num_chips: 1
     update_interval: 1000ms
     lambda: |-
-      it.printf("%s", id(ident_txt).state.c_str());  
+      it.set_intensity(5);
+      it.printf("%8.0f", id(ident_btc).state);
