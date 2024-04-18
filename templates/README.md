@@ -102,3 +102,28 @@ sensor:
     value_template: "{{ value_json.height }}"
     scan_interval: 300
 ```
+
+---
+
+
+```yaml
+# F2C
+
+sensor:
+  - platform: dht
+    pin: D5
+    temperature:
+      name: "Teplota"
+      id: teplota
+    humidity:
+      name: "Vlhkost"
+
+template:
+  # Převod teploty z Celsia na Fahrenheita
+  - sensor:
+      - name: "Teplota_Fahrenheit"
+        unit_of_measurement: "°F"
+        accuracy_decimals: 1
+        lambda: |-
+          return id(teplota).state * 9.0 / 5.0 + 32.0;
+```
