@@ -38,3 +38,9 @@ display:
         it.strftime("%H%M", id(homeassistant_time).now());
 
 ```
+
+---
+
+Project example:
+
+https://github.com/octopuslab-cz/home-assistant/blob/main/projects/hooka_diagnostic.yaml
