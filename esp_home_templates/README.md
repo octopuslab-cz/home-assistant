@@ -1,8 +1,10 @@
-# octopus_lab Home Assistant
+# octopus_lab Home Assistant | ESP home
+
+## ESP8266 | ESP32
 
 ---
 
-## PIN2 / switch - relay / LED2
+### PIN2 / switch - relay / LED2
 
 ```yaml
 switch:
@@ -11,7 +13,7 @@ switch:
     pin: GPIO2
 ```
 
-## WS
+### WS
 
 ```yaml
 light:
@@ -30,7 +32,7 @@ light:
 ---
 
 
-## PIN2 LED2 - blink On boot
+### PIN2 LED2 - blink On boot
 
 ```yaml
 esphome:
@@ -45,7 +47,7 @@ esphome:
 ```
 
 
-## PIN2 LED2 - still flashing
+### PIN2 LED2 - still flashing
 
 ```yaml
 interval:
@@ -63,4 +65,12 @@ interval:
           }
 ```
 
+### WiFi Signal
 
+```yaml
+sensor:
+  - platform: wifi_signal
+    name: "WiFi_Signal"
+    id: wifi_sensor
+    update_interval: 10min
+```
