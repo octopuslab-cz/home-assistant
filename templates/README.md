@@ -76,6 +76,22 @@ Month: {{ month }}
 Month: 03
 ```
 
+###
+
+```yaml
+{{ states("sensor.esp_hooka_diagnostic_ambient") | round(1) }}
+23.1
+
+{{ states.sensor | list }}
+[ all sensors... = array
+
+{{ states.sensor | list | count }}
+count(array)
+
+{{ states.sensor | rejectattr("state", "eq", "unavailable") | list | count }}
+
+```
+
 ### config - bitcoin info
 
 ```yaml
