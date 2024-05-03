@@ -3,6 +3,14 @@
 
 ...
 
+spi:
+  miso_pin: 19
+  clk_pin: 18
+
+#cs = Pin(5, Pin.OUT)
+#spi = SPI(-1, baudrate=5000000, polarity=0, phase=0, sck=Pin(18), mosi = Pin(10), miso=Pin(19))
+
+
 i2c:
   sda: 21
   scl: 22
@@ -26,6 +34,11 @@ dallas:
 # Individual sensors
 # NTC=35 / ADC(RAM) == 32 / 32
 sensor:
+  - platform: max6675
+    name: "K_Temperature"
+    cs_pin: 5
+    update_interval: 5s
+
   - platform: dallas
     address: 0x030315a27909d328 # volny
     name: "Temperature3"
@@ -60,65 +73,28 @@ sensor:
     attenuation: 11dB # 1:
     filters:
       - lambda: return abs(x-2950)/117; # abs(int((raw-int(self.amp_zero))/float(self.raw_amp)))/10 
-# 123: 3.5=2x, 117: 
-  - platform: adc
-    id: source_sensor32
-    name: ADC0_32 # test
-    pin: 32 # 33 termitor / 33 spi RAM
-    filters:
-      # -  offset: -0.042
-      - multiply: 3.3
-      - median:
-          window_size: 8
-          send_every: 2
-          send_first_at: 2
-    update_interval: 5s
 
   - platform: adc
-    id: source_sensor
+    id: ntc_RAW
     pin: 35 # NTC
-    name: "NTC from RAW"
+    name: "NTC RAW"
     raw: true
-    unit_of_measurement: "°C"
+    # unit_of_measurement: "°C"
+    attenuation: 11dB
     update_interval: 3s
     filters:
     #  - multiply: 1
-      - lambda: return int((4096-x)/28); # - int: /30: 150=135 // 28: 170=135 //
-    #  - lambda: return int(x);
+    #  - lambda: return int((4096-x)/28); # - int: /30: 150=135 // 28: 170=135 //
+      - lambda: return int(x);  # err: return x;
 
-  - platform: resistance
-    id: resistance_sensor
-    sensor: source_sensor
-    configuration: UPSTREAM
-    resistor: 11kOhm
-    # reference_voltage: 3.3V
-    name: Resistance Sensor
-
-  # Thermistor calibration
-  - platform: ntc
-    sensor: resistance_sensor
-    calibration:
-      b_constant: 3950
-      reference_temperature: 25°C
-      reference_resistance: 10kOhm
-    name: NTC Temperature
-
-  - platform: template
-    id: power_sensor
-    name: "Power"            # {return states('sensor.v_in') / states('sensor.i_out');}
-    unit_of_measurement: "W" # {{ states('sensor.v_in') | float / states('sensor.i_out') | float }}
-    lambda: |-
-      { return 123; }
-    # { return (id('vin').state) * (id('iout').state); }
-    # ok1: {return 123;}  
-    # x? {return id('vin').state;}
-    update_interval: 5s
-
+       
   # --- IR thermom. ---
   - platform: mlx90614
     ambient:
+      id: ir_ambient
       name: Ambient
     object:
+      id: ir_object
       name: Object
     update_interval: 5s
 
