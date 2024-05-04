@@ -108,6 +108,8 @@ display: # x,y
 
 ## Serial display TFT 320x240
 
+https://github.com/octopusengine/serial-display
+
 ```yaml
 ...
 # +5 G 14 13 15 12
@@ -126,5 +128,5 @@ binary_sensor:
         input: true
         pullup: true
     on_press:
-        - uart.write: "QHello World*\n"
+        - uart.write: "QoctopusLAB test*\n"
 ```
