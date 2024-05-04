@@ -105,3 +105,26 @@ display: # x,y
       it.print(0, 0, id(font1), "Hello Octopus");
       it.print(10, 20, id(font2), "TEST 123");
 ```
+
+## Serial display TFT 320x240
+
+```yaml
+...
+# +5 G 14 13 15 12
+uart:
+  tx_pin: 14 # ESP -> DISP
+  rx_pin: 13 
+  baud_rate: 115200  #/9600
+
+binary_sensor:
+  - platform: gpio
+    name: "Button"
+    pin:
+      number: 0
+      inverted: true
+      mode:
+        input: true
+        pullup: true
+    on_press:
+        - uart.write: "QHello World*\n"
+```
