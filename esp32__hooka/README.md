@@ -41,6 +41,20 @@ display:
 
 ---
 
+```yaml
+light:
+  - platform: neopixelbus
+    type: GRB
+    variant: WS2812
+    pin: GPIO25
+    method:
+      type: esp32_rmt
+      channel: 0
+    num_leds: 32
+    name: "RGB LED"
+    id: rgb32 
+```
+
 Project example:
 
 https://github.com/octopuslab-cz/home-assistant/blob/main/projects/hooka_diagnostic.yaml
