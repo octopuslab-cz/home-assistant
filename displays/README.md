@@ -130,3 +130,38 @@ binary_sensor:
     on_press:
         - uart.write: "QoctopusLAB test*\n"
 ```
+---
+
+```yaml
+...
+text_sensor:
+  - platform: homeassistant
+    entity_id: input_text.sd_text
+    name: "sd_text"
+    id: sd_text
+
+binary_sensor:
+  - platform: gpio
+    name: "Button"
+    pin:
+      number: 0
+      inverted: true
+      mode:
+        input: true
+        pullup: true
+    on_press:
+      - switch.turn_on: fet1      
+      #- uart.write: "W1R3QHello World*\n"
+      - uart.write: "W1R3Q"
+      #- uart.write: id(sd_text)
+      - uart.write: !lambda |-
+          std::vector<unsigned char> buffer;
+          const char* str = id(sd_text).state.c_str();
+          for (size_t i = 0; i < strlen(str); i++) {
+              buffer.push_back(str[i]);
+          }
+          return buffer;
+      - uart.write: "*\n"
+    on_release:
+      - switch.turn_off: fet1
+```
