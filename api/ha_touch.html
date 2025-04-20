@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <title>HA Touch Control - Dark Mode</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- External CSS -->
+  <link rel="stylesheet" href="ha.css">
+</head>
+<body>
+  <div id="notice">
+    <p>Spusťte HTTP server:</p>
+    <code>python -m http.server 5500</code>
+    <p>Otevřete v prohlížeči:</p>
+    <code>http://192.168.0.xx:5500/ha_touch.html</code>
+  </div>
+
+  <!-- input_boolean toggles -->
+  <button class="toggle-btn off" data-entity="input_boolean.tog1">Toggle 1</button>
+  <button class="toggle-btn off" data-entity="input_boolean.tog2">Toggle 2</button>
+  <button class="toggle-btn off" data-entity="input_boolean.tog3">Toggle 3</button>
+
+  <!-- Controls: Log toggle and Auto-refresh -->
+  <div id="controls">
+    <button id="log-toggle" class="control-btn">Show Log</button>
+    <button id="auto-refresh-toggle" class="control-btn">Auto-refresh On</button>
+  </div>
+
+  <div id="action-log" style="display: none;">Log...</div>
+
+  <script src="ha.js"></script>
+  <script>
+    // Main script, ha.js provides HA_URL and TOKEN
+    function logAction(msg) {
+      const logDiv = document.getElementById('action-log');
+      const entry = document.createElement('div'); entry.textContent = msg;
+      logDiv.appendChild(entry); logDiv.scrollTop = logDiv.scrollHeight;
+    }
+
+    async function testAuth() {
+      logAction('Testing authentication with token');
+      try {
+        const res = await fetch(`${HA_URL}/api/config`, { headers: { 'Authorization': `Bearer ${TOKEN}` }, mode: 'cors' });
+        if (res.ok) {
+          const { version } = await res.json(); logAction(`Authenticated: Home Assistant version ${version}`);
+        } else {
+          logAction(`Authentication failed: ${res.status} ${res.statusText}`);
+        }
+      } catch (e) { logAction(`Auth error: ${e.message}`); }
+    }
+
+    async function fetchState(entity) {
+      logAction(`Fetching state for ${entity}`);
+      const res = await fetch(`${HA_URL}/api/states/${entity}`, { mode: 'cors', headers: { 'Authorization': `Bearer ${TOKEN}` } });
+      if (!res.ok) { logAction(`Error fetching state: ${res.status} ${res.statusText}`); throw new Error(res.statusText); }
+      const { state } = await res.json(); logAction(`State for ${entity}: ${state}`); return state;
+    }
+
+    async function callService(domain, service, data) {
+      logAction(`Calling service ${domain}.${service}`);
+      const res = await fetch(`${HA_URL}/api/services/${domain}/${service}`, {
+        method: 'POST', mode: 'cors', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${TOKEN}` }, body: JSON.stringify(data)
+      });
+      if (!res.ok) { logAction(`Service error: ${res.status} ${res.statusText}`); throw new Error(res.statusText); }
+      logAction(`Service ${domain}.${service} executed`);
+    }
+
+    async function refresh(button) {
+      try {
+        const state = await fetchState(button.dataset.entity);
+        button.classList.toggle('on', state === 'on');
+        button.classList.toggle('off', state !== 'on');
+      } catch (e) { logAction(`Refresh error: ${e.message}`); }
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      await testAuth();
+      document.querySelectorAll('.toggle-btn').forEach(btn => {
+        refresh(btn);
+        btn.addEventListener('click', async () => {
+          btn.disabled = true; const entity = btn.dataset.entity;
+          logAction(`Toggling ${entity}`);
+          try { await callService(entity.split('.')[0], 'toggle', { entity_id: entity }); await refresh(btn); }
+          catch (e) { logAction(`Error toggling ${entity}: ${e.message}`); }
+          btn.disabled = false;
+        });
+      });
+
+      // Log toggle
+      const logToggle = document.getElementById('log-toggle');
+      const logDiv = document.getElementById('action-log');
+      logToggle.addEventListener('click', () => {
+        if (logDiv.style.display === 'none') { logDiv.style.display = 'block'; logToggle.textContent = 'Hide Log'; }
+        else { logDiv.style.display = 'none'; logToggle.textContent = 'Show Log'; }
+      });
+
+      // Auto-refresh toggle default ON
+      const autoToggle = document.getElementById('auto-refresh-toggle');
+      const INTERVAL = 30000; // 30 seconds
+      let autoId = setInterval(() => document.querySelectorAll('.toggle-btn').forEach(refresh), INTERVAL);
+      logAction(`Auto-refresh enabled (${INTERVAL/1000}s)`);
+      autoToggle.addEventListener('click', () => {
+        if (autoId) { clearInterval(autoId); autoId = null; autoToggle.textContent = 'Auto-refresh Off'; logAction('Auto-refresh disabled'); }
+        else { autoId = setInterval(() => document.querySelectorAll('.toggle-btn').forEach(refresh), INTERVAL); autoToggle.textContent = 'Auto-refresh On'; logAction(`Auto-refresh enabled (${INTERVAL/1000}s)`); }
+      });
+    });
+  </script>
+</body>
+</html>
