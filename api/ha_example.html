@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <title>HA Example - Dark Mode</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- External stylesheet -->
+  <link rel="stylesheet" href="ha.css">
+  <!-- Home Assistant authentication & library -->
+  <script src="ha_auth.js"></script>
+  <script src="ha_lib.js"></script>
+</head>
+<body>
+  <div id="notice">
+    <code>HTTP server: python -m http.server 5500</code>
+    <code>http://192.168.0.59:5500/ha_touch.html</code>
+  </div>
+
+  <!-- Toggle buttons -->
+  <button class="toggle-btn off" data-entity="input_boolean.tog1">Toggle 1</button>
+  <button class="toggle-btn off" data-entity="input_boolean.tog2">Toggle 2</button>
+  <button class="toggle-btn off" data-entity="input_boolean.tog3">Toggle 3</button>
+
+  <!-- Helper value display -->
+  <div id="helper-container">
+    <code>input_number.nr_btc_usd</code>
+    <div id="helper-value" class="orange_block">–</div>
+  </div>
+
+  <!-- Controls: Log toggle & Auto-refresh -->
+  <div id="controls">
+    <button id="log-toggle" class="control-btn">Show Log</button>
+    <button id="auto-refresh-toggle" class="control-btn">Auto-refresh On</button>
+  </div>
+
+  <!-- Action log -->
+  <div id="action-log" style="display:none;">Log...</div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      // Authenticate and init toggles
+      await HA.testAuth();
+      HA.initToggleButtons('.toggle-btn');
+      // Display helper value initially
+      await HA.displayState('input_number.nr_btc_usd', '#helper-value');
+
+      // Log toggle
+      const logToggle = document.getElementById('log-toggle');
+      const logDiv = document.getElementById('action-log');
+      logToggle.addEventListener('click', () => {
+        if (logDiv.style.display === 'none') {
+          logDiv.style.display = 'block';
+          logToggle.textContent = 'Hide Log';
+        } else {
+          logDiv.style.display = 'none';
+          logToggle.textContent = 'Show Log';
+        }
+      });
+
+      // Auto-refresh default ON, refresh toggles + helper
+      const autoToggle = document.getElementById('auto-refresh-toggle');
+      const INTERVAL = 30000; // milliseconds
+      let autoId = setInterval(() => {
+        document.querySelectorAll('.toggle-btn').forEach(btn => HA.refreshButton(btn));
+        HA.displayState('input_number.nr_btc_usd', '#helper-value');
+      }, INTERVAL);
+
+      autoToggle.addEventListener('click', () => {
+        if (autoId) {
+          clearInterval(autoId);
+          autoId = null;
+          autoToggle.textContent = 'Auto-refresh Off';
+          HA.logAction('Auto-refresh disabled');
+        } else {
+          autoId = setInterval(() => {
+            document.querySelectorAll('.toggle-btn').forEach(btn => HA.refreshButton(btn));
+            HA.displayState('input_number.nr_btc_usd', '#helper-value');
+          }, INTERVAL);
+          autoToggle.textContent = 'Auto-refresh On';
+          HA.logAction(`Auto-refresh enabled (${INTERVAL/1000}s)`);
+        }
+      });
+    });
+  </script>
+
+<br><br>
+<hr>
+test 2025/03
+</body>
+</html>
