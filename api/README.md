@@ -18,6 +18,13 @@ Restart=always
 WantedBy=multi-user.target
 ```
 
+activate:
+```
+sudo systemctl daemon-reexec
+sudo systemctl daemon-reload
+sudo systemctl enable startup.service
+```
+
 ---
 /etc/xdg/lxsession/LXDE-pi/autostart
 ```
