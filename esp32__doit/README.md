@@ -2,8 +2,8 @@
 
 ---
 
-## ...
-```
+## basic setup
+```yaml
 switch:
   - platform: gpio
     id: led_2
