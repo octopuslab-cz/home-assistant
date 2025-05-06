@@ -39,4 +39,12 @@ sudo systemctl enable startup.service
 @chromium-browser --start-fullscreen http://YOUR_URL:5500/ha_example.html
 ```
 ---
+configuration.yaml
+```
+http:
+  cors_allowed_origins:
+    - http://localhost:5500
+```
+---
+
 ToDo: "fix" for *localhost*
