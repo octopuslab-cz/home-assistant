@@ -38,3 +38,20 @@ sensor:
           send_first_at: 2
     update_interval: 3s
 ```
+
+---
+
+Dallas temp.
+
+```yaml
+one_wire:
+  - platform: gpio
+    pin: 32 # DEV1
+
+sensor:
+  - platform: dallas_temp
+    address: 0x0?????????????????? # your_sensor
+    name: "Teplota Dallas"
+    update_interval: 30s
+    accuracy_decimals: 1
+```
