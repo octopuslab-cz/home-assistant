@@ -3,7 +3,13 @@
 ## ESP8266 | ESP32
 
 ---
-
+### ota 2025
+```yaml
+...
+ota:
+  - platform: esphome
+    password: "..."
+```
 ### PIN2 / switch - relay / LED2
 
 ```yaml
